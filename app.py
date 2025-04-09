@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask import jsonify, make_response  # Import jsonify and make_response
 import os
 
 app = Flask(__name__)
