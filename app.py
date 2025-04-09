@@ -1,23 +1,23 @@
+# app.py
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db, migrate
 import os
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECRET_KEY'] = os.urandom(24)
 
-# Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.urandom(24)
+    db.init_app(app)
+    migrate.init_app(app, db)
 
-db = SQLAlchemy(app)
+    # Register blueprints
+    from controllers.staff_controller import staff_controller
+    app.register_blueprint(staff_controller)
 
-# Import and register blueprints
-from views import staff_views
-app.register_blueprint(staff_views.staff_bp)
-
-# Create database tables within the app context
-with app.app_context():
-    db.create_all()
+    return app
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True)
