@@ -1,28 +1,27 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
 from models import Staff
 
 class IStaffService(ABC):
+    
     @abstractmethod
     def list_staff(self) -> List[Staff]:
         pass
-
+    
     @abstractmethod
-    def get_staff(self, staff_id: int) -> Optional[Staff]:
+    def get_staff(self, staff_id: str) -> Staff:
         pass
-
+    
     @abstractmethod
-    def create_staff(self, staff: Staff) -> Staff:
+    def register_staff(self, name: str, role: str, specialty: str, contact: str) -> Staff:
         pass
-
+        
     @abstractmethod
-    def edit_staff(self, staff: Staff) -> Staff:
+    def remove_staff(self, staff_id: str) -> None:
         pass
-
+    
     @abstractmethod
-    def remove_staff(self, staff_id: int) -> None:
+    def update_staff(self, staff_id: str, name: str, role: str, specialty: str, contact: str) -> Staff:
         pass
-
-    @abstractmethod
-    def get_staff_by_uuid(self, staff_uuid: str) -> Optional[Staff]:
-        pass
+    
+    

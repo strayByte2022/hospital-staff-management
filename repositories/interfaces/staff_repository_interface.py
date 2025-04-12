@@ -8,10 +8,6 @@ class IStaffRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_id(self, staff_id: str) -> Optional[Staff]:
-        pass
-
-    @abstractmethod
     def get_by_staff_uuid(self, staff_uuid: str) -> Optional[Staff]:
         pass
 
