@@ -7,9 +7,6 @@ class StaffRepository(IStaffRepository):
     def get_all(self) -> List[Staff]:
         return Staff.query.all()
 
-    def get_by_id(self, staff_id: int) -> Optional[Staff]:
-        return Staff.query.get(staff_id)
-
     def get_by_staff_uuid(self, staff_uuid: str) -> Optional[Staff]:
         return db.session.query(Staff).filter_by(StaffId=staff_uuid).first()
 
