@@ -19,12 +19,15 @@ This project follows a clean monolithic architecture using Flask, SQLAlchemy, an
 ## 🯩 Project Structure
 
 ```
-/controllers         # API endpoint handlers (controllers)
-/services            # Business logic layer
-/repositories        # Data access logic (repositories)
-/models.py           # SQLAlchemy models
-/extensions.py       # Flask extensions like db
-/app.py              # App factory + entry point
+/module
+    /controllers         # API endpoint handlers (controllers)
+    /services            # Business logic layer
+    /repositories        # Data access logic (repositories)
+    /models.py           # SQLAlchemy models
+/shared                  # Shared in all modules
+    /extensions.py       # Flask extensions like db
+    /base_model.py       # Base class for instances
+/app.py                  # App factory + entry point
 ```
 
 ---
@@ -36,7 +39,7 @@ Let’s say you want to add a new entity: `Patient`.
 ### 1. 🧱 Define Model in `models.py`
 
 ```python
-class Patient(db.Model):
+class Patient(BaseModel):
     __tablename__ = 'patient'
 
     Id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
@@ -54,58 +57,6 @@ flask db migrate -m "Add patient table"
 flask db upgrade
 ```
 
-> 🔥 This creates and applies the migration script for the new model.
-
----
-
-### 3. 🏦 Create Repository
-
-In `repositories/patient_repository.py`:
-
-```python
-class PatientRepository:
-    def get_all(self): ...
-    def get_by_id(self, patient_id): ...
-    def add(self, patient): ...
-    def update(self, patient): ...
-    def delete(self, patient_id): ...
-```
-
----
-
-### 4. 🧠 Create Service
-
-In `services/patient_service.py`:
-
-```python
-class PatientService:
-    def __init__(self, repository): ...
-    def list_patients(self): ...
-    def get_patient(self, id): ...
-    def create_patient(self, patient): ...
-    def edit_patient(self, patient): ...
-    def remove_patient(self, id): ...
-```
-
----
-
-### 5. 🌐 Add Controller
-
-In `controllers/patient_controller.py`:
-
-```python
-@bp.route('/api/patients')
-def get_patients():
-    return jsonify(patient_service.list_patients())
-```
-
-Then register the blueprint in `app.py`:
-
-```python
-from controllers.patient_controller import patient_controller
-app.register_blueprint(patient_controller)
-```
-
 ---
 
 ### 🧪 Testing Locally
@@ -119,7 +70,7 @@ flask run
 
 ## ✅ Summary Checklist
 
-- [ ] Add model in `models.py`
+- [ ] Add model in `<module-name>/models.py`
 - [ ] Run `flask db migrate && flask db upgrade`
 - [ ] Create repository
 - [ ] Create service
