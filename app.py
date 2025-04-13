@@ -1,6 +1,9 @@
 # app.py
 from flask import Flask
-from extensions import db, migrate
+from shared.extensions import db, migrate
+from shared.init import init_staff_blueprint, init_patient_blueprint
+from patient_management.models import *
+from staff_management.models import *
 import os
 
 def create_app():
@@ -11,10 +14,14 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+    
+    with app.app_context():
+        db.create_all()
 
     # Register blueprints
-    from controllers.staff_controller import staff_controller
-    app.register_blueprint(staff_controller)
+    app.register_blueprint(init_staff_blueprint())
+    app.register_blueprint(init_patient_blueprint())
+    
 
     return app
 

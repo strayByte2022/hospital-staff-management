@@ -1,0 +1,47 @@
+{
+    "/staff POST": {
+        "name": "string",
+        "role": "string",
+        "department": "string",
+        "contact": "string"
+    },
+    "/staff/{staff_id} PUT": {
+        "name": "string (optional)",
+        "role": "string (optional)",
+        "department": "string (optional)",
+        "contact": "string (optional)"
+    },
+    "/staff/{staff_id}/shifts POST": {
+        "shift_start": "string (date-time)",
+        "shift_end": "string (date-time)"
+    },
+    "/patients POST": {
+        "name": "string",
+        "age": "integer",
+        "gender": "string",
+        "contact": "string",
+        "address": "string"
+    },
+    "/patients/{patient_uuid} PUT": {
+        "name": "string (optional)",
+        "age": "integer (optional)",
+        "gender": "string (optional)",
+        "contact": "string (optional)",
+        "address": "string (optional)"
+    },
+    "/patients/{patient_uuid}/medical_history POST": {},
+    "/patients/{patient_uuid}/medical_history/{history_id}/diagnoses POST": {
+        "diagnosis": "string"
+    },
+    "/patients/{patient_uuid}/medical_history/{history_id}/allergies POST": {
+        "allergy": "string"
+    },
+    "/patients/{patient_uuid}/medical_history/{history_id}/test_results POST": {
+        "result": "string",
+        "date": "string (date-time)"
+    },
+    "/patients/{patient_uuid}/medical_history/{history_id}/prescriptions POST": {
+        "medication": "string",
+        "dosage": "string"
+    }
+}
