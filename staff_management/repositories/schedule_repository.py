@@ -5,7 +5,7 @@ from staff_management.models import Shift
 
 class ScheduleRepository(IScheduleRepository):
     def get_schedule(self,staff_id: str) -> List[Shift]:
-        shifts = Shift.query.filter_by(StaffId=staff_id).all()
+        shifts = Shift.query.filter_by(staff_id=staff_id).all()
         return shifts
 
     def add_shift(self, shift:Shift) -> Shift:
@@ -15,7 +15,7 @@ class ScheduleRepository(IScheduleRepository):
         return shift
 
     def delete_shift(self, staff_id: str, shift_id: int) -> None:
-        shift = Shift.query.filter_by(StaffId=staff_id, Id=shift_id).first()
+        shift = Shift.query.filter_by(staff_id=staff_id, id=shift_id).first()
         if shift:
             db.session.delete(shift)
             db.session.commit()

@@ -97,9 +97,6 @@ class StaffController:
             start_time = request.args.get('start_time')
             end_time = request.args.get('end_time')
             
-            if not start_time or not end_time:
-                return jsonify({'error': 'Start and end times are required'}), 400
-            
             shifts = self.schedule_service.get_schedule(staff_id, start_time, end_time)
         except ValueError as e:
             return jsonify({'error': str(e)}), 400

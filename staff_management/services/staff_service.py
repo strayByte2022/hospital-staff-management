@@ -3,6 +3,7 @@ from shared.enums import RoleEnum, SpecialityEnum
 from staff_management.services.interfaces.staff_service_interface import IStaffService
 from staff_management.repositories.interfaces.staff_repository_interface import IStaffRepository
 from staff_management.models import Staff, Doctor, Nurse
+from uuid import UUID
 
 class StaffService(IStaffService):
     def __init__(self, staff_repository: IStaffRepository): 
@@ -12,7 +13,7 @@ class StaffService(IStaffService):
         staff_list = self.staff_repository.get_all()
         return staff_list
     
-    def get_staff(self, staff_id: str) -> Staff:
+    def get_staff(self, staff_id: UUID) -> Staff:
         staff = self.staff_repository.get_by_staff_uuid(staff_id)
         return staff
     
@@ -30,10 +31,10 @@ class StaffService(IStaffService):
         staff = self.staff_repository.add(staff)
         return staff
         
-    def remove_staff(self, staff_id: str) -> None:
+    def remove_staff(self, staff_id: UUID) -> None:
         self.staff_repository.delete(staff_id)
     
-    def update_staff(self, staff_id: str, name: str, role: str, specialty: str, contact: str, license_number:str, certification:str) -> Staff:
+    def update_staff(self, staff_id: UUID, name: str, role: str, specialty: str, contact: str, license_number:str, certification:str) -> Staff:
         if role not in RoleEnum:
             raise ValueError("Invalid role")
         if specialty not in SpecialityEnum:

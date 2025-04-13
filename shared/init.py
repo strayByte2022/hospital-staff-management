@@ -13,16 +13,16 @@ def init_staff_blueprint():
     schedule_service = ScheduleService(schedule_repository, staff_service)
     staff_controller = StaffController(staff_service, schedule_service)
     staff_blueprint.add_url_rule('/', view_func=staff_controller.get_all_staff, methods=['GET'])
-    staff_blueprint.add_url_rule('/<string:staff_id>', view_func=staff_controller.get_staff, methods=['GET'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>', view_func=staff_controller.get_staff, methods=['GET'])
     staff_blueprint.add_url_rule('/', view_func=staff_controller.create_staff, methods=['POST'])
-    staff_blueprint.add_url_rule('/<string:staff_id>', view_func=staff_controller.update_staff, methods=['PUT'])
-    staff_blueprint.add_url_rule('/<string:staff_id>', view_func=staff_controller.delete_staff, methods=['DELETE'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>', view_func=staff_controller.update_staff, methods=['PUT'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>', view_func=staff_controller.delete_staff, methods=['DELETE'])
     
-    staff_blueprint.add_url_rule('/<string:staff_id>/shifts', view_func=staff_controller.get_shifts_within_time, methods=['GET'])
-    staff_blueprint.add_url_rule('/<string:staff_id>/shifts', view_func=staff_controller.create_shift, methods=['POST'])
-    staff_blueprint.add_url_rule('/<string:staff_id>/shifts', view_func=staff_controller.delete_shift, methods=['DELETE'])
-    staff_blueprint.add_url_rule('/<string:staff_id>/shifts/availability', view_func=staff_controller.get_staff_availability, methods=['GET'])
-    staff_blueprint.add_url_rule('/<string:staff_id>/shifts/workhours', view_func=staff_controller.get_staff_work_hours, methods=['GET'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>/shifts', view_func=staff_controller.get_shifts_within_time, methods=['GET'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>/shifts', view_func=staff_controller.create_shift, methods=['POST'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>/shifts', view_func=staff_controller.delete_shift, methods=['DELETE'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>/shifts/availability', view_func=staff_controller.get_staff_availability, methods=['GET'])
+    staff_blueprint.add_url_rule('/<uuid:staff_id>/shifts/workhours', view_func=staff_controller.get_staff_work_hours, methods=['GET'])
     
     return staff_blueprint
 
@@ -41,16 +41,16 @@ def init_patient_blueprint():
     patient_controller = PatientController(patient_service, medical_history_service)
     
     patient_blueprint.add_url_rule('/', view_func=patient_controller.get_all_patients, methods=['GET'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>', view_func=patient_controller.get_patient, methods=['GET'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>', view_func=patient_controller.get_patient, methods=['GET'])
     patient_blueprint.add_url_rule('/', view_func=patient_controller.create_patient, methods=['POST'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>', view_func=patient_controller.update_patient, methods=['PUT'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>', view_func=patient_controller.delete_patient, methods=['DELETE'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>', view_func=patient_controller.update_patient, methods=['PUT'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>', view_func=patient_controller.delete_patient, methods=['DELETE'])
     
-    patient_blueprint.add_url_rule('/<string:patient_uuid>/medical_history', view_func=patient_controller.get_medical_history, methods=['GET'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>/medical_history', view_func=patient_controller.create_medical_history, methods=['POST'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_diagnosis, methods=['POST'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_allergy, methods=['POST'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_test_results, methods=['POST'])
-    patient_blueprint.add_url_rule('/<string:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_prescription, methods=['POST'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history', view_func=patient_controller.get_medical_history, methods=['GET'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history', view_func=patient_controller.create_medical_history, methods=['POST'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_diagnosis, methods=['POST'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_allergy, methods=['POST'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_test_results, methods=['POST'])
+    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_prescription, methods=['POST'])
     
     return patient_blueprint
