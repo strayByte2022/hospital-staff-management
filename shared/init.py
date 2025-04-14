@@ -48,9 +48,53 @@ def init_patient_blueprint():
     
     patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history', view_func=patient_controller.get_medical_history, methods=['GET'])
     patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history', view_func=patient_controller.create_medical_history, methods=['POST'])
-    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_diagnosis, methods=['POST'])
-    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_allergy, methods=['POST'])
-    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_test_results, methods=['POST'])
-    patient_blueprint.add_url_rule('/<uuid:patient_uuid>/medical_history/<int:history_id>', view_func=patient_controller.add_prescription, methods=['POST'])
+    
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/diagnosis',
+        defaults={'history_id': None},
+        view_func=patient_controller.add_diagnosis,
+        methods=['POST']
+    )
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/<int:history_id>/diagnosis',
+        view_func=patient_controller.add_diagnosis,
+        methods=['POST']
+    )
+    
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/allergy',
+        defaults={'history_id': None},
+        view_func=patient_controller.add_allergy,
+        methods=['POST']
+    )
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/<int:history_id>/allergy',
+        view_func=patient_controller.add_allergy,
+        methods=['POST']
+    )
+    
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/test',
+        defaults={'history_id': None},
+        view_func=patient_controller.add_test_results,
+        methods=['POST']
+    )
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/<int:history_id>/test',
+        view_func=patient_controller.add_test_results,
+        methods=['POST']
+    )
+    
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/prescription',
+        defaults={'history_id': None},
+        view_func=patient_controller.add_prescription,
+        methods=['POST']
+    )
+    patient_blueprint.add_url_rule(
+        '/<uuid:patient_uuid>/medical_history/<int:history_id>/prescription',
+        view_func=patient_controller.add_prescription,
+        methods=['POST']
+    )
     
     return patient_blueprint

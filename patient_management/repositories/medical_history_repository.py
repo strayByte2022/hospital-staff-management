@@ -13,7 +13,8 @@ class MedicalHistoryRepository(IMedicalHistoryRepository):
         return MedicalHistory.query.filter_by(patient_id=patient_id).all()
     
     def add(self, patient_id: UUID) -> MedicalHistory:
-        medical_history = MedicalHistory(patient_id=patient_id)
+        medical_history = MedicalHistory.query.filter_by(patient_id=patient_id).all()
+        medical_history = MedicalHistory(patient_id=patient_id, id = len(medical_history)+1)
         db.session.add(medical_history)
         db.session.commit()
         return medical_history
@@ -46,9 +47,11 @@ class MedicalHistoryRepository(IMedicalHistoryRepository):
     def add_test_results(self, patient_id: UUID, test_results: TestResults) -> None:
         medical_history: MedicalHistory = MedicalHistory.query.filter_by(patient_id=patient_id, id=test_results.medical_history_id).first()
         if medical_history:
+            test_results.test_id = len(medical_history.test_results) + 1
             medical_history.test_results.append(test_results)
             db.session.commit()
         else:
+            test_results.test_id = 1
             medical_history = self.add(patient_id)
             medical_history.test_results.append(test_results)
             db.session.commit()
@@ -57,9 +60,11 @@ class MedicalHistoryRepository(IMedicalHistoryRepository):
     def add_prescription(self, patient_id: UUID, prescription: Prescription) -> None:
         medical_history: MedicalHistory = MedicalHistory.query.filter_by(patient_id=patient_id, id=prescription.medical_history_id).first()
         if medical_history:
+            prescription.prescription_id = len(medical_history.prescription) + 1
             medical_history.prescription.append(prescription)
             db.session.commit()
         else:
+            prescription.prescription_id = 1
             medical_history = self.add(patient_id)
             medical_history.prescription.append(prescription)
             db.session.commit()

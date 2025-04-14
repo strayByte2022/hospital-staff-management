@@ -21,7 +21,7 @@ class ScheduleService(IScheduleService):
             if (shift.shift_start < shift_end and shift.shift_end > shift_start):
                 raise ValueError("Shift overlaps with existing shifts.")
             
-        shift = Shift(staff_id=staff_id, shift_start=shift_start, shift_end=shift_end)
+        shift = Shift(staff_id=staff_id, shift_start=shift_start, shift_end=shift_end, id=len(shifts)+1)
         return self.schedule_repository.add_shift(shift)
     
     def get_schedule(self, staff_id: UUID, range_start: datetime, range_end: datetime) -> List[Shift]:
@@ -51,7 +51,7 @@ class ScheduleService(IScheduleService):
     
     def get_staff_work_hours(self, staff_id: UUID, range_start: datetime, range_end: datetime) -> float:
         shifts = self.get_schedule(staff_id, range_start, range_end)
-        total_hours = sum((shift.shift_start - shift.shift_start).total_seconds() for shift in shifts) / 3600.0
+        total_hours = sum((shift.shift_end - shift.shift_start).total_seconds() for shift in shifts) / 3600.0
         return total_hours
     
     def remove_shift(self, staff_id: UUID, shift_id: int) -> None:

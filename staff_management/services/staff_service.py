@@ -44,16 +44,19 @@ class StaffService(IStaffService):
         if not staff:
             raise ValueError("Staff not found")
         
+        if staff.role != role:
+            raise ValueError("You cannot change the role of a staff member")
+        
         staff.name = name
         staff.role = role
         staff.specialty = specialty
         staff.contact = contact
         
         if role == RoleEnum.DOCTOR:
-            staff.license_number = license_number
+            staff.license_number = license_number if license_number else staff.license_number
             
         elif role == RoleEnum.NURSE:
-            staff.certification = certification
+            staff.certification = certification if certification else staff.certification
             
         staff = self.staff_repository.update(staff)
         return staff

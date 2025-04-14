@@ -9,7 +9,7 @@ class PatientRepository(IPatientRepository):
         return Patient.query.all()
     
     def get_by_patient_uuid(self, patient_id: UUID) -> Optional[Patient]:
-        return Patient.query.filter_by(uuid=patient_id).first()
+        return Patient.query.filter_by(id=patient_id).first()
     
     def add(self, patient: Patient) -> Patient:
         db.session.add(patient)

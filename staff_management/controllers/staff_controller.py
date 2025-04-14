@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from staff_management.services.interfaces.staff_service_interface import IStaffService
 from staff_management.services.interfaces.schedule_service_interface import IScheduleService
-import datetime
+from shared.utils import toDateTime
 
 class StaffController:
     def __init__(self, staff_service: IStaffService, schedule_service: IScheduleService):
@@ -51,9 +51,11 @@ class StaffController:
         role = data.get('role', staff.role)
         speciality = data.get('department', staff.specialty)
         contact = data.get('contact', staff.contact)
+        license_number = data.get('license_number', None)
+        certification = data.get('certification', None)
         
         try:
-            updated = self.staff_service.update_staff(staff_id, name, role, speciality, contact)
+            updated = self.staff_service.update_staff(staff_id, name, role, speciality, contact, license_number, certification)
             if not updated:
                 return jsonify({'error': 'Failed to update staff'}), 400
         except ValueError as e:
@@ -81,8 +83,8 @@ class StaffController:
             return jsonify({'error': 'Shift start and end times are required'}), 400
 
         try:
-            shift_start = datetime.strptime(data.get('shift_start'), '%Y-%m-%dT%H:%M:%S')
-            shift_end = datetime.strptime(data.get('shift_end'), '%Y-%m-%dT%H:%M:%S')
+            shift_start = toDateTime(data.get('shift_start'))
+            shift_end = toDateTime(data.get('shift_end'))
             created = self.schedule_service.add_shift(staff_id, shift_start, shift_end)
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
@@ -97,7 +99,7 @@ class StaffController:
             start_time = request.args.get('start_time')
             end_time = request.args.get('end_time')
             
-            shifts = self.schedule_service.get_schedule(staff_id, start_time, end_time)
+            shifts = self.schedule_service.get_schedule(staff_id, toDateTime(start_time), toDateTime(end_time))
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
         
@@ -115,7 +117,7 @@ class StaffController:
             if not start_time or not end_time:
                 return jsonify({'error': 'Start and end times are required'}), 400
             
-            availability = self.schedule_service.get_staff_availability(staff_id, start_time, end_time)
+            availability = self.schedule_service.get_staff_availability(staff_id, toDateTime(start_time), toDateTime(end_time))
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
         
@@ -136,7 +138,7 @@ class StaffController:
             if not start_time or not end_time:
                 return jsonify({'error': 'Start and end times are required'}), 400
             
-            work_hours = self.schedule_service.get_staff_work_hours(staff_id, start_time, end_time)
+            work_hours = self.schedule_service.get_staff_work_hours(staff_id, toDateTime(start_time), toDateTime(end_time))
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
         
