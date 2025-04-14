@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey
 import uuid
 from datetime import datetime
 from shared.base_model import BaseModel, db
+from shared.enums import RoleEnum, SpecialityEnum
 # -----------------------
 # Staff model
 # -----------------------
@@ -33,6 +34,22 @@ class Staff(BaseModel):
             'specialty': self.specialty,
             'contact': self.contact
         }
+        
+    @classmethod
+    def create(cls, name: str, role: RoleEnum, specialty: SpecialityEnum, contact: str, **kwargs) -> 'Staff':
+        if role not in RoleEnum:
+            raise ValueError("Invalid role")
+        if specialty not in SpecialityEnum:
+            raise ValueError("Invalid specialty")
+        
+        if role == RoleEnum.DOCTOR:
+            staff = Doctor(name=name, role=role, specialty=specialty, contact=contact, **kwargs)
+        elif role == RoleEnum.NURSE:
+            staff = Nurse(name=name, role=role, specialty=specialty, contact=contact, **kwargs)
+        return staff
+    
+    def update(self, name: str, role: str, specialty: str, contact: str, **kwargs) -> None:
+        raise NotImplementedError("This method should be implemented in subclasses.")
 
 
 # -----------------------
@@ -45,7 +62,7 @@ class Doctor(Staff):
     license_number: Mapped[Optional[str]] = mapped_column(db.Text)
     
     __mapper_args__ = {
-            'polymorphic_identity': 'Doctor',
+            'polymorphic_identity': RoleEnum.DOCTOR.value,
         }
             
     def to_dict(self):
@@ -57,6 +74,12 @@ class Doctor(Staff):
             'contact': self.contact,
             'license_number': self.license_number
         }
+        
+    def update(self, **kwargs) -> None:
+        for field in ['name', 'role', 'specialty', 'contact', 'license_number']:
+            if field in kwargs:
+                setattr(self, field, kwargs[field])
+
 
 # -----------------------
 # Nurse table
@@ -67,7 +90,7 @@ class Nurse(Staff):
     id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('staff.id'), primary_key=True, default=uuid.uuid4)
     certification: Mapped[Optional[str]] = mapped_column(db.Text)
     __mapper_args__ = {
-            'polymorphic_identity': 'Nurse',
+            'polymorphic_identity': RoleEnum.NURSE.value,
     }
         
     def to_dict(self):
@@ -79,6 +102,11 @@ class Nurse(Staff):
             'contact': self.contact,
             'certification': self.certification
         }
+        
+    def update(self, **kwargs) -> None:
+        for field in ['name', 'role', 'specialty', 'contact', 'certification']:
+            if field in kwargs:
+                setattr(self, field, kwargs[field])
 
 # -----------------------
 # Shift table
