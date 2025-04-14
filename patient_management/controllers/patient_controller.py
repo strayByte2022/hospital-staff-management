@@ -1,8 +1,7 @@
 from flask import jsonify, request
 from patient_management.services.interfaces.patient_service_interface import IPatientService
 from patient_management.services.interfaces.medical_history_service_interface import IMedicalHistoryService
-import datetime
-
+from shared.utils import toDateTime
 class PatientController:
     def __init__(self, patient_service: IPatientService, medical_history_service: IMedicalHistoryService):
         self.patient_service = patient_service
@@ -10,7 +9,7 @@ class PatientController:
         
     def get_all_patients(self):
         patients = self.patient_service.get_all()
-        return jsonify(patients), 200
+        return jsonify([p.to_dict() for p in patients]), 200
     
     def get_patient(self, patient_uuid):
         patient = self.patient_service.get_by_patient_uuid(patient_uuid)
@@ -61,9 +60,7 @@ class PatientController:
         
     def get_medical_history(self, patient_uuid):
         medical_history = self.medical_history_service.get_by_patient_id(patient_uuid)
-        if not medical_history:
-            return jsonify({'error': 'Medical history not found'}), 404
-        return jsonify(medical_history.to_dict()), 200
+        return jsonify([m.to_dict() for m in medical_history]), 200
     
     def create_medical_history(self, patient_uuid):
         data = request.get_json()
@@ -103,7 +100,7 @@ class PatientController:
             return jsonify({'error': 'Missing data'}), 400
         try:
             result = data.get('result')
-            date = datetime.strptime(data.get('date'), '%Y-%m-%dT%H:%M:%S')
+            date = toDateTime(data.get('date'))
             self.medical_history_service.add_test_results(patient_uuid, history_id, date, result)
             return jsonify({'message': 'Test results added successfully'}), 201
         except Exception as e:

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from patient_management.models import Patient
+from uuid import UUID
 
 class IPatientService(ABC):
     @abstractmethod
@@ -9,7 +10,7 @@ class IPatientService(ABC):
         pass
 
     @abstractmethod
-    def get_by_patient_uuid(self, patient_uuid: str) -> Optional[Patient]:
+    def get_by_patient_uuid(self, patient_id: UUID) -> Optional[Patient]:
         """Retrieve a patient by their UUID."""
         pass
 
@@ -19,11 +20,11 @@ class IPatientService(ABC):
         pass
 
     @abstractmethod
-    def update(self, patient_id: str, name: str, age: int, gender: str, contact: str, address: str) -> Patient:
+    def update(self, patient_id: UUID, name: str, age: int, gender: str, contact: str, address: str) -> Patient:
         """Update an existing patient's information."""
         pass
 
     @abstractmethod
-    def delete(self, patient_id: str) -> None:
+    def delete(self, patient_id: UUID) -> None:
         """Delete a patient by their ID."""
         pass

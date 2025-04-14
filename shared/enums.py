@@ -2,7 +2,6 @@
 from enum import Enum
 
 class RoleEnum(str, Enum):
-    ADMIN = "Admin"
     NURSE = "Nurse"
     DOCTOR = "Doctor"
 

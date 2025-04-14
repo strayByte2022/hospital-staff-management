@@ -51,9 +51,6 @@ class MedicalHistory(BaseModel):
         return {
             'id': self.id,
             'patient_id': str(self.patient_id),
-            'condition': self.condition,
-            'treatment': self.treatment,
-            'date': self.date,
             'diagnosis': [d.to_dict() for d in self.diagnosis],
             'allergy': [a.to_dict() for a in self.allergy],
             'test_results': [tr.tod_ict() for tr in self.test_results],
@@ -105,7 +102,7 @@ class TestResults(BaseModel):
     
     medical_history_id: Mapped[int] = mapped_column(db.Integer, ForeignKey('medical_history.id'), primary_key=True)
     test_id: Mapped[Optional[int]] = mapped_column(db.Text, primary_key=True)
-    date: Mapped[Optional[datetime]] = mapped_column(db.Text)
+    date: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
     result: Mapped[Optional[str]] = mapped_column(db.Text)
     
     
@@ -126,7 +123,7 @@ class Prescription(BaseModel):
     __tablename__ = 'prescription'
     
     medical_history_id: Mapped[int] = mapped_column(db.Integer, ForeignKey('medical_history.id'), primary_key=True)
-    prescriptionId: Mapped[Optional[int]] = mapped_column(db.Text, primary_key=True)
+    prescription_id: Mapped[Optional[int]] = mapped_column(db.Text, primary_key=True)
     medication: Mapped[Optional[str]] = mapped_column(db.Text)
     dosage: Mapped[Optional[str]] = mapped_column(db.Text)
     
@@ -135,7 +132,7 @@ class Prescription(BaseModel):
     def to_dict(self):
         return {
             'medical_history_id': self.medical_history_id,
-            'prescriptionId': self.prescriptionId,
+            'prescriptionId': self.prescription_id,
             'medication': self.medication,
             'dosage': self.dosage,
         }

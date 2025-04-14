@@ -18,11 +18,13 @@ class Staff(BaseModel):
     contact: Mapped[Optional[str]] = mapped_column(db.Text)
     
     __mapper_args__ = {
-        'with_polymorphic': '*',
+    'polymorphic_identity': 'staff',
+    'polymorphic_on': role,
+    'with_polymorphic': '*',
     }
     
-    shifts = relationship('Shift', back_populates='staff')
-    
+    shifts = relationship('Shift', back_populates='staff', cascade='all, delete-orphan', passive_deletes=True )    
+
     def to_dict(self):
         return {
             'id': str(self.id),
@@ -39,13 +41,13 @@ class Staff(BaseModel):
 class Doctor(Staff):
     __tablename__ = 'doctor'
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('staff.id'), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('staff.id', ondelete='CASCADE'), primary_key=True, default=uuid.uuid4)
     license_number: Mapped[Optional[str]] = mapped_column(db.Text)
     
     __mapper_args__ = {
-            'polymorphic_identity': 'doctor',
+            'polymorphic_identity': 'Doctor',
         }
-    
+            
     def to_dict(self):
         return {
             'id': str(self.id),
@@ -60,14 +62,14 @@ class Doctor(Staff):
 # Nurse table
 # -----------------------
 class Nurse(Staff):
-    __tablename__ = 'nurse'
+    __tablename__ = 'Nurse'
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('staff.id'), primary_key=True, default=uuid.uuid4)
     certification: Mapped[Optional[str]] = mapped_column(db.Text)
     __mapper_args__ = {
-            'polymorphic_identity': 'nurse',
+            'polymorphic_identity': 'Nurse',
     }
-    
+        
     def to_dict(self):
         return {
             'id': str(self.id),
@@ -86,8 +88,8 @@ class Shift(BaseModel):
 
     id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
     staff_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('staff.id'), primary_key=True, default=uuid.uuid4)
-    shift_start: Mapped[Optional[datetime]] = mapped_column(db.Text)
-    shift_end: Mapped[Optional[datetime]] = mapped_column(db.Text)
+    shift_start: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
+    shift_end: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
 
     staff = relationship('Staff', back_populates='shifts')
     
