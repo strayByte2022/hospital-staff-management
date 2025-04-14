@@ -27,13 +27,8 @@ class Staff(BaseModel):
     shifts = relationship('Shift', back_populates='staff', cascade='all, delete-orphan', passive_deletes=True ) 
 
     def to_dict(self):
-        return {
-            'id': str(self.id),
-            'name': self.name,
-            'role': self.role,
-            'specialty': self.specialty,
-            'contact': self.contact
-        }
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
         
     @classmethod
     def create(cls, name: str, role: RoleEnum, specialty: SpecialityEnum, contact: str, **kwargs) -> 'Staff':
