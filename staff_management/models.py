@@ -24,7 +24,7 @@ class Staff(BaseModel):
     'with_polymorphic': '*',
     }
     
-    shifts = relationship('Shift', back_populates='staff', cascade='all, delete-orphan', passive_deletes=True )    
+    shifts = relationship('Shift', back_populates='staff', cascade='all, delete-orphan', passive_deletes=True ) 
 
     def to_dict(self):
         return {
@@ -50,6 +50,10 @@ class Staff(BaseModel):
     
     def update(self, name: str, role: str, specialty: str, contact: str, **kwargs) -> None:
         raise NotImplementedError("This method should be implemented in subclasses.")
+    
+    @classmethod
+    def roles(cls):
+        return [Doctor, Nurse]
 
 
 # -----------------------
@@ -76,7 +80,7 @@ class Doctor(Staff):
         }
         
     def update(self, **kwargs) -> None:
-        for field in ['name', 'role', 'specialty', 'contact', 'license_number']:
+        for field in ['name','specialty', 'contact', 'license_number']:
             if field in kwargs:
                 setattr(self, field, kwargs[field])
 
@@ -104,7 +108,7 @@ class Nurse(Staff):
         }
         
     def update(self, **kwargs) -> None:
-        for field in ['name', 'role', 'specialty', 'contact', 'certification']:
+        for field in ['name', 'specialty', 'contact', 'certification']:
             if field in kwargs:
                 setattr(self, field, kwargs[field])
 

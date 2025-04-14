@@ -32,19 +32,13 @@ class StaffService(IStaffService):
         self.staff_repository.delete(staff_id)
     
     def update_staff(self, staff_id: UUID,**kwargs) -> Staff:
-        role = kwargs.get('role')
         specialty = kwargs.get('department')
-        if role and role not in RoleEnum:
-            raise ValueError("Invalid role")
         if specialty and specialty not in SpecialityEnum:
             raise ValueError("Invalid specialty")
         
         staff = self.staff_repository.get_by_staff_uuid(staff_id)
         if not staff:
             raise ValueError("Staff not found")
-        
-        if role and staff.role != role:
-            raise ValueError("You cannot change the role of a staff member")
         
         staff.update(**kwargs)
             
