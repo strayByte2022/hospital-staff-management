@@ -50,10 +50,6 @@ class Staff(BaseModel):
     
     def update(self, name: str, role: str, specialty: str, contact: str, **kwargs) -> None:
         raise NotImplementedError("This method should be implemented in subclasses.")
-    
-    @classmethod
-    def roles(cls):
-        return [Doctor, Nurse]
 
 
 # -----------------------

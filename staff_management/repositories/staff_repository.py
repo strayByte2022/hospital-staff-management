@@ -6,14 +6,14 @@ from sqlalchemy.orm import with_polymorphic
 from uuid import UUID
 class StaffRepository(IStaffRepository):
     def get_all(self) -> List[Staff]:
-        staff_poly = with_polymorphic(Staff, Staff.roles())
+        staff_poly = with_polymorphic(Staff, Staff.__subclasses__())
         results =  db.session.query(staff_poly).all()
         for staff in results:
             print(type(staff))
         return results
 
     def get_by_staff_uuid(self, staff_uuid: UUID) -> Optional[Staff]:
-        staff_poly = with_polymorphic(Staff, Staff.roles())
+        staff_poly = with_polymorphic(Staff, Staff.__subclasses__())
     
         return db.session.query(staff_poly).filter(staff_poly.id == staff_uuid).first()
 
