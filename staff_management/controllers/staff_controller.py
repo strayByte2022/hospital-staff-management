@@ -25,16 +25,9 @@ class StaffController:
         data = request.get_json()
         if not data or not data.get('name') or not data.get('role') or not data.get('department') or not data.get('contact'):
             return jsonify({'error': 'Missing fields'}), 400
-
-        name = data.get('name')
-        role = data.get('role')
-        department = data.get('department')
-        contact = data.get('contact')
-        license_number = data.get('license_number')
-        certification = data.get('certification')
         
         try:
-            created = self.staff_service.register_staff(name, role, department, contact, license_number, certification)
+            created = self.staff_service.register_staff(**data)
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
         
@@ -47,15 +40,11 @@ class StaffController:
             return jsonify({'error': 'Staff not found'}), 404
 
         data = request.get_json()
-        name = data.get('name', staff.name)
-        role = data.get('role', staff.role)
-        speciality = data.get('department', staff.specialty)
-        contact = data.get('contact', staff.contact)
-        license_number = data.get('license_number', None)
-        certification = data.get('certification', None)
+        fields = {k: v if v else staff.to_dict().get(k) for k, v in data.items() }
+
         
         try:
-            updated = self.staff_service.update_staff(staff_id, name, role, speciality, contact, license_number, certification)
+            updated = self.staff_service.update_staff(staff_id, **fields)
             if not updated:
                 return jsonify({'error': 'Failed to update staff'}), 400
         except ValueError as e:

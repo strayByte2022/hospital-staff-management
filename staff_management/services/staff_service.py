@@ -17,16 +17,13 @@ class StaffService(IStaffService):
         staff = self.staff_repository.get_by_staff_uuid(staff_id)
         return staff
     
-    def register_staff(self, name: str, role: str, specialty: str, contact: str, license_number: str, certification: str) -> Staff:
+    def register_staff(self, name: str, role: str, department: str, contact: str, **kwargs) -> Staff:
         if role not in RoleEnum:
             raise ValueError("Invalid role")
-        if specialty not in SpecialityEnum:
+        if department not in SpecialityEnum:
             raise ValueError("Invalid specialty")
         
-        if role == RoleEnum.DOCTOR:
-            staff = Doctor(name=name, role=role, specialty=specialty, contact=contact, license_number=license_number)
-        elif role == RoleEnum.NURSE:
-            staff = Nurse(name=name, role=role, specialty=specialty, contact=contact, certification=certification)
+        staff = Staff.create(name=name, role=role, specialty=department, contact=contact, **kwargs)
             
         staff = self.staff_repository.add(staff)
         return staff
@@ -34,29 +31,16 @@ class StaffService(IStaffService):
     def remove_staff(self, staff_id: UUID) -> None:
         self.staff_repository.delete(staff_id)
     
-    def update_staff(self, staff_id: UUID, name: str, role: str, specialty: str, contact: str, license_number:str, certification:str) -> Staff:
-        if role not in RoleEnum:
-            raise ValueError("Invalid role")
-        if specialty not in SpecialityEnum:
+    def update_staff(self, staff_id: UUID,**kwargs) -> Staff:
+        specialty = kwargs.get('department')
+        if specialty and specialty not in SpecialityEnum:
             raise ValueError("Invalid specialty")
         
         staff = self.staff_repository.get_by_staff_uuid(staff_id)
         if not staff:
             raise ValueError("Staff not found")
         
-        if staff.role != role:
-            raise ValueError("You cannot change the role of a staff member")
-        
-        staff.name = name
-        staff.role = role
-        staff.specialty = specialty
-        staff.contact = contact
-        
-        if role == RoleEnum.DOCTOR:
-            staff.license_number = license_number if license_number else staff.license_number
-            
-        elif role == RoleEnum.NURSE:
-            staff.certification = certification if certification else staff.certification
+        staff.update(**kwargs)
             
         staff = self.staff_repository.update(staff)
         return staff
